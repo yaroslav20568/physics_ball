@@ -33,13 +33,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _updateScreenDimensions(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    screenWidth = mediaQuery.size.width;
-    final screenHeight = mediaQuery.size.height;
-    final appBarHeight = AppBar().preferredSize.height;
-    final statusBarHeight = mediaQuery.padding.top;
-    availableHeight = screenHeight - appBarHeight - statusBarHeight;
+  void _updateScreenDimensions(Size size) {
+    screenWidth = size.width;
+    availableHeight = size.height;
   }
 
   void _resetBall() {
@@ -123,44 +119,50 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _updateScreenDimensions(context);
-
-    if (ballX == null && screenWidth > 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          final random = Random();
-          final ballDiameter = GameConstants.ballRadius * 2;
-          final isLeftSide = random.nextBool();
-          final buttonHeight = 56.0;
-          final buttonTop = 8.0;
-          final spacing = 20.0;
-
-          setState(() {
-            ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
-            ballY = buttonTop + buttonHeight + spacing;
-            velocityX = isLeftSide
-                ? GameConstants.initialVelocityX
-                : -GameConstants.initialVelocityX;
-          });
-        }
-      });
-    }
-
     return Scaffold(
       appBar: AppBar(title: const Text('Physics Ball')),
-      body: Stack(
-        children: [
-          if (ballX != null) BallWidget(x: ballX!, y: ballY),
-          Positioned(
-            right: 16.0,
-            top: 8.0,
-            child: FloatingActionButton.extended(
-              onPressed: _resetBall,
-              label: const Text('Drop'),
-              icon: const Icon(Icons.arrow_downward),
-            ),
-          ),
-        ],
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            _updateScreenDimensions(constraints.biggest);
+
+            if (ballX == null && screenWidth > 0) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  final random = Random();
+                  final ballDiameter = GameConstants.ballRadius * 2;
+                  final isLeftSide = random.nextBool();
+                  final buttonHeight = 56.0;
+                  final buttonTop = 8.0;
+                  final spacing = 20.0;
+
+                  setState(() {
+                    ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
+                    ballY = buttonTop + buttonHeight + spacing;
+                    velocityX = isLeftSide
+                        ? GameConstants.initialVelocityX
+                        : -GameConstants.initialVelocityX;
+                  });
+                }
+              });
+            }
+
+            return Stack(
+              children: [
+                if (ballX != null) BallWidget(x: ballX!, y: ballY),
+                Positioned(
+                  right: 16.0,
+                  top: 8.0,
+                  child: FloatingActionButton.extended(
+                    onPressed: _resetBall,
+                    label: const Text('Drop'),
+                    icon: const Icon(Icons.arrow_downward),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

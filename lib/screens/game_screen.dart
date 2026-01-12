@@ -79,8 +79,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     }
 
     final isOnBottom = (newY + ballDiameter >= availableHeight - 1);
-    final isVelocityLow = velocityY.abs() < GameConstants.minVelocity && 
-                         velocityX.abs() < GameConstants.minVelocity;
+    final isVelocityLow =
+        velocityY.abs() < GameConstants.minVelocity &&
+        velocityX.abs() < GameConstants.minVelocity;
 
     if (isOnBottom && isVelocityLow) {
       setState(() {
@@ -104,20 +105,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     _updateScreenDimensions(context);
 
-    ballX ??= (screenWidth / 2) - GameConstants.ballRadius;
+    if (ballX == null && screenWidth > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            ballX = (screenWidth / 2) - GameConstants.ballRadius;
+          });
+        }
+      });
+    }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Physics Ball'),
-      ),
+      appBar: AppBar(title: const Text('Physics Ball')),
       body: Stack(
-        children: [
-          if (ballX != null)
-            BallWidget(
-              x: ballX!,
-              y: ballY,
-            ),
-        ],
+        children: [if (ballX != null) BallWidget(x: ballX!, y: ballY)],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _resetBall,

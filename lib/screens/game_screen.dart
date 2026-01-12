@@ -1,8 +1,9 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:physics_ball/widgets/index.dart';
 import 'package:physics_ball/constants/index.dart';
+import 'package:physics_ball/models/index.dart';
+import 'package:physics_ball/services/index.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -12,18 +13,22 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
-  double? ballX;
-  double ballY = 0.0;
-  double velocityX = 0.0;
-  double velocityY = 0.0;
-  bool isFalling = false;
+  BallState _ballState = const BallState(
+    x: null,
+    y: 0.0,
+    velocityX: 0.0,
+    velocityY: 0.0,
+    isFalling: false,
+  );
   late Ticker _ticker;
+  late PhysicsService _physicsService;
   double screenWidth = 0.0;
   double availableHeight = 0.0;
 
   @override
   void initState() {
     super.initState();
+    _physicsService = PhysicsService();
     _ticker = createTicker(_updatePhysics);
   }
 
@@ -39,81 +44,28 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   void _resetBall() {
-    if (screenWidth == 0) return;
-
-    final random = Random();
-    final ballDiameter = GameConstants.ballRadius * 2;
-    final isLeftSide = random.nextBool();
-    final buttonHeight = 56.0;
-    final buttonTop = 8.0;
-    final spacing = 20.0;
-
+    final newState = _physicsService.resetBall(screenWidth);
     setState(() {
-      ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
-      ballY = buttonTop + buttonHeight + spacing;
-      velocityX = isLeftSide
-          ? GameConstants.initialVelocityX
-          : -GameConstants.initialVelocityX;
-      velocityY = 0.0;
-      isFalling = true;
+      _ballState = newState;
     });
-    _ticker.start();
+    if (newState.isFalling) {
+      _ticker.start();
+    }
   }
 
   void _updatePhysics(Duration elapsed) {
-    if (!isFalling || screenWidth == 0 || availableHeight == 0) return;
+    final newState = _physicsService.updatePhysics(
+      _ballState,
+      screenWidth,
+      availableHeight,
+    );
 
-    final ballDiameter = GameConstants.ballRadius * 2;
-
-    velocityY += GameConstants.gravity;
-
-    double newX = (ballX ?? 0) + velocityX;
-    double newY = ballY + velocityY;
-
-    if (newX < 0) {
-      newX = 0;
-      velocityX = -velocityX * GameConstants.bounceDamping;
-    } else if (newX + ballDiameter > screenWidth) {
-      newX = screenWidth - ballDiameter;
-      velocityX = -velocityX * GameConstants.bounceDamping;
-    }
-
-    if (newY < 0) {
-      newY = 0;
-      velocityY = -velocityY * GameConstants.bounceDamping;
-    } else if (newY + ballDiameter > availableHeight) {
-      newY = availableHeight - ballDiameter;
-      velocityY = -velocityY * GameConstants.bounceDamping;
-    }
-
-    final isOnBottom = (newY + ballDiameter >= availableHeight - 1);
-
-    if (isOnBottom) {
-      velocityX *= GameConstants.friction;
-      if (velocityX.abs() < GameConstants.minVelocity) {
-        velocityX = 0.0;
-      }
-    }
-
-    final isVelocityLow =
-        velocityY.abs() < GameConstants.minVelocity &&
-        velocityX.abs() < GameConstants.minVelocity;
-
-    if (isOnBottom && isVelocityLow) {
-      setState(() {
-        ballX = newX;
-        ballY = availableHeight - ballDiameter;
-        velocityX = 0.0;
-        velocityY = 0.0;
-        isFalling = false;
-      });
+    if (!newState.isFalling && _ballState.isFalling) {
       _ticker.stop();
-      return;
     }
 
     setState(() {
-      ballX = newX;
-      ballY = newY;
+      _ballState = newState;
     });
   }
 
@@ -130,22 +82,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           builder: (context, constraints) {
             _updateScreenDimensions(constraints.biggest);
 
-            if (ballX == null && screenWidth > 0) {
+            if (_ballState.x == null && screenWidth > 0) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (mounted) {
-                  final random = Random();
-                  final ballDiameter = GameConstants.ballRadius * 2;
-                  final isLeftSide = random.nextBool();
-                  final buttonHeight = 56.0;
-                  final buttonTop = 8.0;
-                  final spacing = 20.0;
-
                   setState(() {
-                    ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
-                    ballY = buttonTop + buttonHeight + spacing;
-                    velocityX = isLeftSide
-                        ? GameConstants.initialVelocityX
-                        : -GameConstants.initialVelocityX;
+                    _ballState = _physicsService.initializeBall(screenWidth);
                   });
                 }
               });
@@ -153,7 +94,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
             return Stack(
               children: [
-                if (ballX != null) BallWidget(x: ballX!, y: ballY),
+                if (_ballState.x != null)
+                  BallWidget(x: _ballState.x!, y: _ballState.y),
                 Positioned(
                   right: 16.0,
                   top: 8.0,

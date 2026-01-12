@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:physics_ball/widgets/index.dart';
@@ -42,10 +43,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   void _resetBall() {
+    if (screenWidth == 0) return;
+
+    final random = Random();
+    final ballDiameter = GameConstants.ballRadius * 2;
+    final isLeftSide = random.nextBool();
+
     setState(() {
-      ballX = 0.0;
+      ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
       ballY = 0.0;
-      velocityX = GameConstants.initialVelocityX;
+      velocityX = isLeftSide
+          ? GameConstants.initialVelocityX
+          : -GameConstants.initialVelocityX;
       velocityY = 0.0;
       isFalling = true;
     });
@@ -108,8 +117,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     if (ballX == null && screenWidth > 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
+          final random = Random();
+          final ballDiameter = GameConstants.ballRadius * 2;
+          final isLeftSide = random.nextBool();
+
           setState(() {
-            ballX = 0.0;
+            ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
+            velocityX = isLeftSide
+                ? GameConstants.initialVelocityX
+                : -GameConstants.initialVelocityX;
           });
         }
       });

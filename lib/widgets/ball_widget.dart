@@ -12,13 +12,10 @@ class BallWidget extends StatelessWidget {
     return Positioned(
       left: x,
       top: y,
-      child: Container(
-        width: GameConstants.ballRadius * 2,
-        height: GameConstants.ballRadius * 2,
-        decoration: const BoxDecoration(
-          color: Colors.blue,
-          shape: BoxShape.circle,
-        ),
+      child: Icon(
+        Icons.sports_basketball,
+        size: GameConstants.ballRadius * 2,
+        color: Colors.black,
       ),
     );
   }

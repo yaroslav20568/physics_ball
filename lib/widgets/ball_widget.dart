@@ -5,11 +5,7 @@ class BallWidget extends StatelessWidget {
   final double x;
   final double y;
 
-  const BallWidget({
-    super.key,
-    required this.x,
-    required this.y,
-  });
+  const BallWidget({super.key, required this.x, required this.y});
 
   @override
   Widget build(BuildContext context) {

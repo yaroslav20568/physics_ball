@@ -43,9 +43,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   void _resetBall() {
     setState(() {
-      ballX = (screenWidth / 2) - GameConstants.ballRadius;
+      ballX = 0.0;
       ballY = 0.0;
-      velocityX = 0.0;
+      velocityX = GameConstants.initialVelocityX;
       velocityY = 0.0;
       isFalling = true;
     });
@@ -109,7 +109,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           setState(() {
-            ballX = (screenWidth / 2) - GameConstants.ballRadius;
+            ballX = 0.0;
           });
         }
       });

@@ -78,6 +78,22 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       velocityY = -velocityY * GameConstants.bounceDamping;
     }
 
+    final isOnBottom = (newY + ballDiameter >= availableHeight - 1);
+    final isVelocityLow = velocityY.abs() < GameConstants.minVelocity && 
+                         velocityX.abs() < GameConstants.minVelocity;
+
+    if (isOnBottom && isVelocityLow) {
+      setState(() {
+        ballX = newX;
+        ballY = availableHeight - ballDiameter;
+        velocityX = 0.0;
+        velocityY = 0.0;
+        isFalling = false;
+      });
+      _ticker.stop();
+      return;
+    }
+
     setState(() {
       ballX = newX;
       ballY = newY;

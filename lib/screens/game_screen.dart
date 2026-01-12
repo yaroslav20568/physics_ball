@@ -44,16 +44,19 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   void _resetBall() {
     if (screenWidth == 0) return;
-    
+
     final random = Random();
     final ballDiameter = GameConstants.ballRadius * 2;
     final isLeftSide = random.nextBool();
-    
+    final buttonHeight = 56.0;
+    final buttonTop = 8.0;
+    final spacing = 20.0;
+
     setState(() {
       ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
-      ballY = 0.0;
-      velocityX = isLeftSide 
-          ? GameConstants.initialVelocityX 
+      ballY = buttonTop + buttonHeight + spacing;
+      velocityX = isLeftSide
+          ? GameConstants.initialVelocityX
           : -GameConstants.initialVelocityX;
       velocityY = 0.0;
       isFalling = true;
@@ -88,7 +91,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     }
 
     final isOnBottom = (newY + ballDiameter >= availableHeight - 1);
-    
+
     if (isOnBottom) {
       velocityX *= GameConstants.friction;
       if (velocityX.abs() < GameConstants.minVelocity) {
@@ -128,11 +131,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           final random = Random();
           final ballDiameter = GameConstants.ballRadius * 2;
           final isLeftSide = random.nextBool();
-          
+          final buttonHeight = 56.0;
+          final buttonTop = 8.0;
+          final spacing = 20.0;
+
           setState(() {
             ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
-            velocityX = isLeftSide 
-                ? GameConstants.initialVelocityX 
+            ballY = buttonTop + buttonHeight + spacing;
+            velocityX = isLeftSide
+                ? GameConstants.initialVelocityX
                 : -GameConstants.initialVelocityX;
           });
         }
@@ -142,12 +149,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(title: const Text('Physics Ball')),
       body: Stack(
-        children: [if (ballX != null) BallWidget(x: ballX!, y: ballY)],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _resetBall,
-        label: const Text('Reset'),
-        icon: const Icon(Icons.refresh),
+        children: [
+          if (ballX != null) BallWidget(x: ballX!, y: ballY),
+          Positioned(
+            right: 16.0,
+            top: 8.0,
+            child: FloatingActionButton.extended(
+              onPressed: _resetBall,
+              label: const Text('Drop'),
+              icon: const Icon(Icons.arrow_downward),
+            ),
+          ),
+        ],
       ),
     );
   }

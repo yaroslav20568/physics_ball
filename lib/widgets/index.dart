@@ -1,1 +1,1 @@
-export 'ball_widget.dart';
+export 'game_screen/index.dart';

@@ -120,7 +120,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Physics Ball')),
+      appBar: AppBar(
+        title: const Text('Physics Ball'),
+        backgroundColor: AppColors.appBarBackground,
+        foregroundColor: AppColors.appBarForeground,
+      ),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -157,6 +161,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                     onPressed: _resetBall,
                     label: const Text('Drop'),
                     icon: const Icon(Icons.arrow_downward),
+                    backgroundColor: AppColors.buttonBackground,
+                    foregroundColor: AppColors.buttonForeground,
                   ),
                 ),
               ],

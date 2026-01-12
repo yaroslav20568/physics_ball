@@ -15,7 +15,7 @@ class BallWidget extends StatelessWidget {
       child: Icon(
         Icons.sports_basketball,
         size: GameConstants.ballRadius * 2,
-        color: Colors.black,
+        color: AppColors.ballIcon,
       ),
     );
   }

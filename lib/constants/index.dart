@@ -1,3 +1,5 @@
+export 'colors.dart';
+
 class GameConstants {
   static const double ballRadius = 30.0;
   static const double gravity = 0.5;

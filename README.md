@@ -1,16 +1,29 @@
-# physics_ball
+# Physics Ball
 
-A new Flutter project.
+## Русский
 
-## Getting Started
+Простое Flutter приложение с симуляцией физики мяча. Мяч падает под действием гравитации, отскакивает от стен с затуханием и останавливается благодаря трению. Нажмите кнопку "Drop" чтобы сбросить мяч в случайной позиции.
 
-This project is a starting point for a Flutter application.
+### Технологии
+- Flutter
+- Dart
 
-A few resources to get you started if this is your first Flutter project:
+### Сборка
+```bash
+flutter build apk --release
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## English
+
+Simple Flutter app with ball physics simulation. The ball falls under gravity, bounces off walls with damping, and stops due to friction. Press the "Drop" button to reset the ball at a random position.
+
+### Technologies
+- Flutter
+- Dart
+
+### Build
+```bash
+flutter build apk --release
+```

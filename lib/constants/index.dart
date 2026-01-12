@@ -6,4 +6,5 @@ class GameConstants {
   static const double initialBallX = 0.0;
   static const double initialBallY = 0.0;
   static const double initialVelocityX = 2.0;
+  static const double friction = 0.95;
 }

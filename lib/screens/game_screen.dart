@@ -44,16 +44,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   void _resetBall() {
     if (screenWidth == 0) return;
-
+    
     final random = Random();
     final ballDiameter = GameConstants.ballRadius * 2;
     final isLeftSide = random.nextBool();
-
+    
     setState(() {
       ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
       ballY = 0.0;
-      velocityX = isLeftSide
-          ? GameConstants.initialVelocityX
+      velocityX = isLeftSide 
+          ? GameConstants.initialVelocityX 
           : -GameConstants.initialVelocityX;
       velocityY = 0.0;
       isFalling = true;
@@ -88,6 +88,14 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     }
 
     final isOnBottom = (newY + ballDiameter >= availableHeight - 1);
+    
+    if (isOnBottom) {
+      velocityX *= GameConstants.friction;
+      if (velocityX.abs() < GameConstants.minVelocity) {
+        velocityX = 0.0;
+      }
+    }
+
     final isVelocityLow =
         velocityY.abs() < GameConstants.minVelocity &&
         velocityX.abs() < GameConstants.minVelocity;
@@ -120,11 +128,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           final random = Random();
           final ballDiameter = GameConstants.ballRadius * 2;
           final isLeftSide = random.nextBool();
-
+          
           setState(() {
             ballX = isLeftSide ? 0.0 : screenWidth - ballDiameter;
-            velocityX = isLeftSide
-                ? GameConstants.initialVelocityX
+            velocityX = isLeftSide 
+                ? GameConstants.initialVelocityX 
                 : -GameConstants.initialVelocityX;
           });
         }
@@ -138,7 +146,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _resetBall,
-        label: const Text('Сбросить'),
+        label: const Text('Reset'),
         icon: const Icon(Icons.refresh),
       ),
     );

@@ -6,6 +6,10 @@
 
 Physics Ball - это мобильное приложение на Flutter для симуляции физики мяча с гравитацией, отскоками и трением. Приложение позволяет пользователям наблюдать за падением мяча с гравитацией, его отскоками от стен с затуханием и трением при контакте с нижней границей экрана.
 
+## Демонстрация
+
+![Демонстрация работы](video/demo.gif)
+
 ## Что было сделано
 
 - Создана структура проекта с разделением на экраны, виджеты, модели, сервисы и константы
@@ -50,6 +54,10 @@ A mobile application for simulating falling ball physics with gravity, bouncing,
 ## Project Description
 
 Physics Ball is a Flutter mobile application for simulating ball physics with gravity, bouncing, and friction. The application allows users to observe the ball falling with gravity, bouncing off walls with damping, and friction when in contact with the bottom boundary of the screen.
+
+## Demo
+
+![Demo](video/demo.gif)
 
 ## What Was Done
 
